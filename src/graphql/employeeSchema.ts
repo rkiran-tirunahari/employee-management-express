@@ -1,5 +1,5 @@
-const { GraphQLObjectType, GraphQLString, GraphQLInt, GraphQLList, GraphQLSchema, GraphQLNonNull } = require('graphql');
-const EmployeeController = require('../controllers/employeeController');
+import { GraphQLObjectType, GraphQLString, GraphQLInt, GraphQLList, GraphQLSchema, GraphQLNonNull } from 'graphql';
+import EmployeeController from '../controllers/employeeController';
 const employeeController = new EmployeeController();
 
 const EmployeeType = new GraphQLObjectType({
@@ -14,7 +14,6 @@ const EmployeeType = new GraphQLObjectType({
   }),
 });
 
-// New: EmployeeListType for pagination and total
 const EmployeeListType = new GraphQLObjectType({
   name: 'EmployeeList',
   fields: () => ({
@@ -27,7 +26,7 @@ const RootQuery = new GraphQLObjectType({
   name: 'RootQueryType',
   fields: {
     employees: {
-      type: EmployeeListType, // <-- Return the new type
+      type: EmployeeListType,
       args: {
         filter: { type: GraphQLString },
         sortBy: { type: GraphQLString },
@@ -36,11 +35,8 @@ const RootQuery = new GraphQLObjectType({
         pageSize: { type: GraphQLInt },
       },
       resolve(parent, args) {
-        // Mimic req.query for controller
-        const req = { query: args };
-        const res = {
-          json(data) { this.data = data; },
-        };
+        const req = { query: args } as any;
+        const res = { json(data: any) { (this as any).data = data; } } as any;
         employeeController.getEmployees(req, res);
         return res.data;
       },
@@ -49,20 +45,17 @@ const RootQuery = new GraphQLObjectType({
       type: EmployeeType,
       args: { id: { type: GraphQLNonNull(GraphQLString) } },
       resolve(parent, args) {
-        const req = { params: { id: args.id } };
+        const req = { params: { id: args.id } } as any;
         const res = {
           status() { return this; },
-          json(data) { this.data = data; },
-        };
+          json(data: any) { (this as any).data = data; },
+        } as any;
         employeeController.getEmployeeById(req, res);
         return res.data;
       },
     },
   },
 });
-
-
-// ...existing code...
 
 const Mutation = new GraphQLObjectType({
   name: 'Mutation',
@@ -80,11 +73,11 @@ const Mutation = new GraphQLObjectType({
         if (!context.user || context.user.role !== 'admin') {
           throw new Error('Forbidden: Admins only');
         }
-        const req = { body: args };
+        const req = { body: args } as any;
         const res = {
           status() { return this; },
-          json(data) { this.data = data; },
-        };
+          json(data: any) { (this as any).data = data; },
+        } as any;
         employeeController.addEmployee(req, res);
         return res.data;
       },
@@ -103,11 +96,11 @@ const Mutation = new GraphQLObjectType({
         if (!context.user || context.user.role !== 'admin') {
           throw new Error('Forbidden: Admins only');
         }
-        const req = { params: { id: args.id }, body: args };
+        const req = { params: { id: args.id }, body: args } as any;
         const res = {
           status() { return this; },
-          json(data) { this.data = data; },
-        };
+          json(data: any) { (this as any).data = data; },
+        } as any;
         employeeController.updateEmployee(req, res);
         return res.data;
       },
@@ -115,7 +108,9 @@ const Mutation = new GraphQLObjectType({
   },
 });
 
-module.exports = new GraphQLSchema({
+const schema = new GraphQLSchema({
   query: RootQuery,
   mutation: Mutation,
 });
+
+export default schema;

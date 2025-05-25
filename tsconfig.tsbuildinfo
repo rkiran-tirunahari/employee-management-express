@@ -1,0 +1,1 @@
+{"root":["./src/app.ts","./src/seedemployees.ts","./src/controllers/employeecontroller.ts","./src/graphql/employeeschema.ts","./src/middleware/auth.ts","./src/models/employee.ts","./src/routes/employeeroutes.ts"],"version":"5.8.3"}

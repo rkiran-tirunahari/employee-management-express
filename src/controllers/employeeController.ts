@@ -1,4 +1,16 @@
+interface Employee {
+  id: string;
+  name: string;
+  age: number;
+  class: string;
+  subjects: string[];
+  attendance: number;
+  role: 'admin' | 'employee';
+  password: string;
+}
+
 class EmployeeController {
+  employees: Employee[];
   constructor() {
     // Admin users
     this.employees = [
@@ -18,7 +30,7 @@ class EmployeeController {
         age: 28,
         class: 'B',
         subjects: ['English', 'History'],
-        attendance: 90, 
+        attendance: 90,
         role: 'admin',
         password: 'password123', // In a real application, use hashed passwords
       },
@@ -36,7 +48,7 @@ class EmployeeController {
       ['Biology', 'Geography'],
       ['PE', 'Health'],
     ];
-    function getRandomInt(min, max) {
+    function getRandomInt(min: number, max: number) {
       return Math.floor(Math.random() * (max - min + 1)) + min;
     }
     for (let i = 3; i <= 102; i++) {
@@ -59,7 +71,7 @@ class EmployeeController {
     }
   }
 
-  getEmployees(req, res) {
+  getEmployees(req: any, res: any): void {
     const { filter, sortBy, sortOrder, page = 1, pageSize = 10 } = req.query;
     let filtered = this.employees;
 
@@ -69,7 +81,7 @@ class EmployeeController {
 
     if (sortBy) {
       filtered = filtered.sort((a, b) => {
-        const key = sortBy;
+        const key = sortBy as keyof Employee;
         if (sortOrder === 'desc') {
           return a[key] < b[key] ? 1 : -1;
         }
@@ -86,7 +98,7 @@ class EmployeeController {
     });
   }
 
-  getEmployeeById(req, res) {
+  getEmployeeById(req: any, res: any): void {
     const employee = this.employees.find(e => e.id === req.params.id);
     if (!employee) {
       return res.status(404).json({ message: 'Employee not found' });
@@ -94,7 +106,7 @@ class EmployeeController {
     res.json(employee);
   }
 
-  addEmployee(req, res) {
+  addEmployee(req: any, res: any): void {
     const newEmp = {
       id: (this.employees.length + 1).toString(),
       ...req.body,
@@ -103,7 +115,7 @@ class EmployeeController {
     res.status(201).json(newEmp);
   }
 
-  updateEmployee(req, res) {
+  updateEmployee(req: any, res: any): void {
     const emp = this.employees.find(e => e.id === req.params.id);
     if (!emp) {
       return res.status(404).json({ message: 'Employee not found' });
@@ -113,4 +125,4 @@ class EmployeeController {
   }
 }
 
-module.exports = EmployeeController;
+export default EmployeeController;
