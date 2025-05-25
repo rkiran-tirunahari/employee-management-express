@@ -7,13 +7,13 @@ This project is a simple employee management system built with Node.js and Expre
 ```
 employee-management-express
 ├── src
-│   ├── app.js                # Entry point of the application
+│   ├── app.ts                # Entry point of the application
 │   ├── controllers           # Contains the logic for handling employee-related requests
-│   │   └── employeeController.js
+│   │   └── employeeController.ts
 │   ├── routes                # Defines the routes for employee management
-│   │   └── employeeRoutes.js
+│   │   └── employeeRoutes.ts
 │   └── models                # Defines the structure of employee data
-│       └── employee.js
+│       └── employee.ts
 ├── package.json              # Configuration file for npm
 └── README.md                 # Documentation for the project
 ```
